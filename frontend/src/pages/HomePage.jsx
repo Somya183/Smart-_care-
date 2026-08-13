@@ -1,91 +1,124 @@
 import React from 'react';
-import { User, Building2, Sparkles, ArrowRight, ShieldCheck, Activity, BedDouble, Stethoscope, Bell } from 'lucide-react';
+import { User, Stethoscope, MapPin, ArrowRight, Activity, Building2, ShieldCheck, Sparkles } from 'lucide-react';
 
 export const HomePage = ({ onSelectFlow }) => {
   return (
-    <div className="space-y-10 py-4 max-w-5xl mx-auto">
-      {/* Header Hub Banner */}
-      <div className="text-center space-y-3">
-        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 text-xs font-semibold">
-          <Sparkles size={14} /> AI System for Hospital Disease Prediction & Interaction
-        </div>
-        <h1 className="text-4xl font-extrabold text-white tracking-tight">
-          Smart<span className="text-cyan-400">Care</span> Unified Health Platform
-        </h1>
-        <p className="text-slate-400 max-w-2xl mx-auto text-sm">
-          Seamless end-to-end integration between AI-based Patient Disease Prediction & Intake and Hospital Seat Allocation & Urgency Response.
-        </p>
-      </div>
+    <div className="max-w-6xl mx-auto p-4 sm:p-6 lg:p-8">
+      {/* Outer Window Container Card matching the design frame */}
+      <div className="bg-slate-50 text-slate-900 rounded-3xl p-6 sm:p-10 shadow-2xl border border-slate-200/80">
+        
+        {/* Top Hero Section */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center mb-10">
+          
+          {/* Left Column: Hero Text & Info */}
+          <div className="lg:col-span-6 space-y-5">
+            {/* Pill Badge */}
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-100/80 border border-blue-200 text-blue-700 text-xs font-semibold">
+              <MapPin size={14} className="text-blue-600" />
+              <span>AI-Powered Triage Active</span>
+            </div>
 
-      {/* Shared Hub Choice Cards */}
-      <div className="grid grid-cols-2 gap-8">
-        {/* Patient Flow Card */}
-        <div
-          onClick={() => onSelectFlow('patient')}
-          className="glass-panel p-8 cursor-pointer hover:border-cyan-500/50 hover:shadow-cyan-500/10 hover:shadow-2xl transition group relative overflow-hidden"
-        >
-          <div className="w-14 h-14 rounded-2xl bg-cyan-500/20 text-cyan-400 flex items-center justify-center mb-6 border border-cyan-500/30 group-hover:scale-110 transition">
-            <User size={32} />
+            {/* Main Headline */}
+            <h1 className="text-4xl sm:text-5xl font-black text-slate-900 tracking-tight leading-[1.1]">
+              Smarter Care.<br />
+              <span className="text-blue-700">Faster Triage.</span>
+            </h1>
+
+            {/* Description Paragraph */}
+            <p className="text-slate-600 text-sm sm:text-base leading-relaxed max-w-lg">
+              SmartCare utilizes advanced AI to prioritize patient care, stream real-time vital data, and optimize clinical workflows for better outcomes.
+            </p>
           </div>
 
-          <span className="text-xs font-bold text-cyan-400 uppercase tracking-widest block mb-1">
-            Patient Portal
-          </span>
-          <h2 className="text-2xl font-bold text-white mb-3">Patient Flow Workflow</h2>
-          <p className="text-xs text-slate-400 leading-relaxed mb-6">
-            Log in, input symptoms to get AI disease prediction & categorization, search hospitals, choose available bed/seat names, and receive allotted slot, time & doctor ticket.
-          </p>
+          {/* Right Column: Hero Visual Banner Card */}
+          <div className="lg:col-span-6">
+            <div className="relative rounded-2xl overflow-hidden shadow-lg border border-slate-200 group">
+              {/* Main Image */}
+              <img
+                src="/smartcare_hero_hospital.jpg"
+                alt="SmartCare Smart Hospital Corridor"
+                className="w-full h-[280px] sm:h-[320px] object-cover group-hover:scale-105 transition duration-500"
+              />
 
-          <div className="space-y-2 border-t border-slate-800/80 pt-4 mb-6">
-            <div className="flex items-center gap-2 text-xs text-slate-300">
-              <Sparkles size={14} className="text-cyan-400" /> AI System to define/suggest disease
-            </div>
-            <div className="flex items-center gap-2 text-xs text-slate-300">
-              <Building2 size={14} className="text-blue-400" /> Searchable List of Hospitals
-            </div>
-            <div className="flex items-center gap-2 text-xs text-slate-300">
-              <BedDouble size={14} className="text-emerald-400" /> Interactive Hospital Seat Name Selector
-            </div>
-          </div>
+              {/* Title overlay in top center of image */}
+              <div className="absolute top-6 left-0 right-0 text-center">
+                <h3 className="text-2xl sm:text-3xl font-extrabold text-slate-800 drop-shadow-md tracking-tight bg-white/60 backdrop-blur-sm inline-block px-6 py-1.5 rounded-full border border-white/40">
+                  SmartCare
+                </h3>
+              </div>
 
-          <div className="flex items-center text-cyan-400 font-bold text-sm group-hover:translate-x-2 transition">
-            Enter Patient Flow <ArrowRight size={16} className="ml-2" />
-          </div>
-        </div>
-
-        {/* Hospital Flow Card */}
-        <div
-          onClick={() => onSelectFlow('hospital')}
-          className="glass-panel p-8 cursor-pointer hover:border-emerald-500/50 hover:shadow-emerald-500/10 hover:shadow-2xl transition group relative overflow-hidden"
-        >
-          <div className="w-14 h-14 rounded-2xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center mb-6 border border-emerald-500/30 group-hover:scale-110 transition">
-            <Building2 size={32} />
-          </div>
-
-          <span className="text-xs font-bold text-emerald-400 uppercase tracking-widest block mb-1">
-            Hospital Portal
-          </span>
-          <h2 className="text-2xl font-bold text-white mb-3">Hospital Flow Workflow</h2>
-          <p className="text-xs text-slate-400 leading-relaxed mb-6">
-            Hospital login, manage patient database, monitor available beds in real-time, accept urgency requests, register patients, and allot doctors & update seat counts.
-          </p>
-
-          <div className="space-y-2 border-t border-slate-800/80 pt-4 mb-6">
-            <div className="flex items-center gap-2 text-xs text-slate-300">
-              <Bell size={14} className="text-amber-400" /> Real-time Urgency Request Alerts
+              {/* Floating System Status Box at bottom left */}
+              <div className="absolute bottom-4 left-4 bg-white/90 backdrop-blur-md px-4 py-3 rounded-xl border border-white/80 shadow-md">
+                <p className="text-[10px] font-bold tracking-wider uppercase text-blue-700 mb-0.5">
+                  System Status
+                </p>
+                <p className="text-sm font-extrabold text-slate-900">
+                  Triage Efficiency: <span className="text-blue-600">98.4%</span>
+                </p>
+              </div>
             </div>
-            <div className="flex items-center gap-2 text-xs text-slate-300">
-              <ShieldCheck size={14} className="text-emerald-400" /> Accept Request & Register Patient
-            </div>
-            <div className="flex items-center gap-2 text-xs text-slate-300">
-              <Stethoscope size={14} className="text-cyan-400" /> Doctor Allocation & Seat Sync
-            </div>
-          </div>
-
-          <div className="flex items-center text-emerald-400 font-bold text-sm group-hover:translate-x-2 transition">
-            Enter Hospital Flow <ArrowRight size={16} className="ml-2" />
           </div>
         </div>
+
+        {/* Bottom Cards Row */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
+          
+          {/* Card 1: Patient Portal */}
+          <div
+            onClick={() => onSelectFlow('patient')}
+            className="bg-white rounded-2xl p-7 border border-slate-200/90 shadow-sm hover:shadow-xl hover:border-blue-300 transition-all duration-300 cursor-pointer group flex flex-col justify-between"
+          >
+            <div>
+              {/* Icon Box */}
+              <div className="w-12 h-12 rounded-xl bg-blue-600 text-white flex items-center justify-center mb-5 shadow-md shadow-blue-500/20 group-hover:scale-110 transition">
+                <User size={24} />
+              </div>
+
+              {/* Title & Subtitle */}
+              <h2 className="text-xl font-bold text-slate-900 mb-2 group-hover:text-blue-700 transition">
+                Patient Portal
+              </h2>
+              <p className="text-slate-500 text-xs sm:text-sm leading-relaxed mb-6">
+                Report symptoms, check-in securely, and view your real-time wait status before arriving at the ER.
+              </p>
+            </div>
+
+            {/* Action Link */}
+            <div className="flex items-center text-blue-600 font-bold text-xs sm:text-sm group-hover:translate-x-1 transition">
+              <span>Start Check-in</span>
+              <ArrowRight size={16} className="ml-1.5" />
+            </div>
+          </div>
+
+          {/* Card 2: Hospital Staff */}
+          <div
+            onClick={() => onSelectFlow('hospital')}
+            className="bg-white rounded-2xl p-7 border border-slate-200/90 shadow-sm hover:shadow-xl hover:border-blue-300 transition-all duration-300 cursor-pointer group flex flex-col justify-between"
+          >
+            <div>
+              {/* Icon Box */}
+              <div className="w-12 h-12 rounded-xl bg-slate-100 text-blue-700 flex items-center justify-center mb-5 border border-slate-200 group-hover:scale-110 transition">
+                <Stethoscope size={24} />
+              </div>
+
+              {/* Title & Subtitle */}
+              <h2 className="text-xl font-bold text-slate-900 mb-2 group-hover:text-blue-700 transition">
+                Hospital Staff
+              </h2>
+              <p className="text-slate-500 text-xs sm:text-sm leading-relaxed mb-6">
+                Access the clinical dashboard, manage live triage queues, and monitor ambulance ETAs in real-time.
+              </p>
+            </div>
+
+            {/* Action Link */}
+            <div className="flex items-center text-blue-600 font-bold text-xs sm:text-sm group-hover:translate-x-1 transition">
+              <span>Secure Login</span>
+              <ArrowRight size={16} className="ml-1.5" />
+            </div>
+          </div>
+
+        </div>
+
       </div>
     </div>
   );
