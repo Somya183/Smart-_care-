@@ -42,7 +42,7 @@ app.use('/api/v1/queue', queueRoutes);
 const PORT = process.env.PORT || 5000;
 server.listen(PORT, () => {
   console.log(`=======================================================`);
-  console.log(`🏥 MedPulse ER Backend Server listening on port ${PORT}`);
-  console.log(`📡 WebSocket Gateway ready on WS://localhost:${PORT}`);
+  console.log(` MedPulse ER Backend Server listening on port ${PORT}`);
+  console.log(` WebSocket Gateway ready on WS://localhost:${PORT}`);
   console.log(`=======================================================`);
 });
