@@ -4,13 +4,14 @@ const aiDiseasePredictor = require('../services/aiDiseasePredictor');
 const hospitalService = require('../services/hospitalService');
 const urgencyRequestService = require('../services/urgencyRequestService');
 
-// 1. Patient AI System: Disease Prediction
-router.post('/predict-disease', (req, res) => {
+// 1. Patient AI System: Disease Prediction (Gemini LLM + Pretrained Engine)
+router.post('/predict-disease', async (req, res) => {
   try {
     const { symptomsText, painLevel, vitals } = req.body;
-    const prediction = aiDiseasePredictor.predictDisease({ symptomsText, painLevel, vitals });
+    const prediction = await aiDiseasePredictor.predictDiseaseAsync({ symptomsText, painLevel, vitals });
     return res.json({ success: true, prediction });
   } catch (error) {
+    console.error('Prediction endpoint error:', error);
     return res.status(500).json({ error: 'Disease prediction failed' });
   }
 });

@@ -1,12 +1,24 @@
 /**
- * SmartCare Pretrained AI Clinical Diagnostic Engine & Department Router
+ * SmartCare Pretrained AI Clinical Diagnostic Engine & Gemini LLM Integration
+ * Combines Google Gemini Generative AI API with a local Pretrained Clinical Engine.
  * Analyzes natural language symptoms, predicts specific medical conditions,
  * calculates confidence scores, emergency severity levels (Level 1-5),
  * and routes patients to the exact specialized hospital department.
  */
 
+const { GoogleGenerativeAI } = require('@google/generative-ai');
+
 class AIDiseasePredictor {
   constructor() {
+    this.geminiApiKey = process.env.GEMINI_API_KEY || '';
+    if (this.geminiApiKey) {
+      const genAI = new GoogleGenerativeAI(this.geminiApiKey);
+      this.model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+    } else {
+      this.model = null;
+    }
+
+    // Pretrained Clinical Knowledge Database (Fallback & Local Engine)
     this.diseaseDatabase = [
       // 1. CARDIOLOGY (HEART & CIRCULATION)
       {
@@ -90,11 +102,59 @@ class AIDiseasePredictor {
   }
 
   /**
-   * Predict diseases based on patient symptom intake
+   * Predict diseases using Google Gemini AI or Pretrained Local Clinical Engine fallback
    * @param {Object} input - { symptomsText, painLevel, vitals }
    */
-  predictDisease(input) {
+  async predictDiseaseAsync(input) {
     const { symptomsText = '', painLevel = 5, vitals = {} } = input;
+
+    // Try Google Gemini LLM API if key is present
+    if (this.model && this.geminiApiKey) {
+      try {
+        const prompt = `
+          You are an expert ER AI Triage Physician.
+          Analyze the patient's symptoms: "${symptomsText}".
+          Pain scale: ${painLevel}/10.
+          
+          Respond ONLY with a valid JSON object in this exact schema without markdown formatting:
+          {
+            "primaryPrediction": {
+              "name": "Predicted Medical Disease / Condition Name",
+              "category": "Medical Specialty Emergency",
+              "confidence": 0.95
+            },
+            "severity": "Level 1 - Critical (Immediate Resuscitation)" | "Level 2 - Emergent" | "Level 3 - Urgent" | "Level 4 - Less Urgent" | "Level 5 - Non-Urgent",
+            "triageLevel": 1,
+            "suggestedSpecialty": "Cardiology" | "Neurology" | "Orthopedics" | "Gastroenterology & General Surgery" | "Pulmonology" | "General Emergency",
+            "recommendedActions": ["Action 1", "Action 2", "Action 3"]
+          }
+        `;
+
+        const result = await this.model.generateContent(prompt);
+        const text = result.response.text().trim().replace(/```json|```/g, '');
+        const parsed = JSON.parse(text);
+        return {
+          ...parsed,
+          aiSource: 'Google Gemini 1.5 Clinical LLM'
+        };
+      } catch (err) {
+        console.warn('Gemini API call failed, falling back to local pretrained clinical engine:', err.message);
+      }
+    }
+
+    // Fallback to local Pretrained Engine
+    const localResult = this.predictDisease(input);
+    return {
+      ...localResult,
+      aiSource: 'SmartCare Pretrained Clinical Engine'
+    };
+  }
+
+  /**
+   * Synchronous Pretrained Local Clinical Engine
+   */
+  predictDisease(input) {
+    const { symptomsText = '', painLevel = 5 } = input;
     const textLower = symptomsText.toLowerCase();
 
     let matchedDiseases = [];
@@ -111,11 +171,9 @@ class AIDiseasePredictor {
       }
     }
 
-    // Sort by match score and confidence score descending
     matchedDiseases.sort((a, b) => b.confidence - a.confidence);
 
     if (matchedDiseases.length === 0) {
-      // Fallback AI prediction
       const isHighPain = painLevel >= 7;
       matchedDiseases.push({
         id: 'dis_def',
@@ -125,7 +183,7 @@ class AIDiseasePredictor {
         confidence: 0.78,
         severity: isHighPain ? 'Level 2 - Emergent' : 'Level 4 - Less Urgent',
         triageLevel: isHighPain ? 2 : 4,
-        recommendedSpecialty: 'General ER & Triage',
+        recommendedSpecialty: 'General ER',
         departmentCode: 'general_er',
         precautions: ['Nurse initial vitals assessment', 'General triage evaluation']
       });
@@ -140,7 +198,8 @@ class AIDiseasePredictor {
       triageLevel: primaryPrediction.triageLevel,
       suggestedSpecialty: primaryPrediction.recommendedSpecialty,
       departmentCode: primaryPrediction.departmentCode,
-      recommendedActions: primaryPrediction.precautions
+      recommendedActions: primaryPrediction.precautions,
+      aiSource: 'SmartCare Pretrained Clinical Engine'
     };
   }
 }
