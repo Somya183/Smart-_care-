@@ -1,4 +1,4 @@
-# 🔌 API Specification & WebSocket Protocol
+# SMARTCARE API Specification & WebSocket Protocol
 
 ## Base URL
 `/api/v1`
