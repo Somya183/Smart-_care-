@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { Stethoscope, Lock, ArrowRight, Eye, EyeOff, Building2, ShieldCheck, Mail, UserCheck } from 'lucide-react';
+import { Stethoscope, Lock, ArrowRight, Eye, EyeOff, Building2, ShieldCheck, Mail, UserCheck, CheckCircle2 } from 'lucide-react';
 
-export const DoctorAuthPage = ({ onAuthSuccess, onDemoDoctorLogin }) => {
+export const DoctorAuthPage = ({ onLoginSuccess }) => {
   const [authMode, setAuthMode] = useState('login'); // 'login' | 'signup'
   const [showPassword, setShowPassword] = useState(false);
 
@@ -15,9 +15,10 @@ export const DoctorAuthPage = ({ onAuthSuccess, onDemoDoctorLogin }) => {
     password: ''
   });
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const handleLoginSubmit = (e) => {
+    if (e) e.preventDefault();
     let name = formData.fullName.trim();
+    
     if (!name && formData.emailOrId) {
       const emailPrefix = formData.emailOrId.split('@')[0];
       const cleanParts = emailPrefix.split(/[\._\-]/).filter(Boolean);
@@ -26,14 +27,51 @@ export const DoctorAuthPage = ({ onAuthSuccess, onDemoDoctorLogin }) => {
         name = 'Dr. ' + name;
       }
     }
-    if (!name) name = 'Logged In Doctor';
+    if (!name) name = 'Dr. Henderson';
 
     const staffUser = {
       name: name,
       role: formData.department || 'Emergency & Trauma',
       department: formData.department || 'Emergency & Trauma'
     };
-    onAuthSuccess(staffUser);
+
+    if (onLoginSuccess) {
+      onLoginSuccess(staffUser);
+    }
+  };
+
+  const handleSignupSubmit = (e) => {
+    if (e) e.preventDefault();
+    let name = formData.fullName.trim();
+    if (!name && formData.email) {
+      name = formData.email.split('@')[0];
+    }
+    if (!name) name = 'Dr. New Clinician';
+    if (!name.toLowerCase().startsWith('dr')) {
+      name = 'Dr. ' + name;
+    }
+
+    const newStaffUser = {
+      name: name,
+      role: formData.department || 'Emergency & Trauma',
+      department: formData.department || 'Emergency & Trauma',
+      licenseId: formData.licenseId || 'MED-REG-ACTIVE'
+    };
+
+    if (onLoginSuccess) {
+      onLoginSuccess(newStaffUser);
+    }
+  };
+
+  const handleDemoLogin = () => {
+    const demoDoctor = {
+      name: 'Dr. Henderson',
+      role: 'ER Senior Lead',
+      department: 'Emergency & Trauma'
+    };
+    if (onLoginSuccess) {
+      onLoginSuccess(demoDoctor);
+    }
   };
 
   return (
@@ -63,7 +101,7 @@ export const DoctorAuthPage = ({ onAuthSuccess, onDemoDoctorLogin }) => {
           </div>
 
           {/* Form */}
-          <form onSubmit={handleSubmit} className="space-y-4 text-xs">
+          <form onSubmit={handleLoginSubmit} className="space-y-4 text-xs">
             
             {/* Staff Email or Doctor ID */}
             <div className="space-y-1">
@@ -115,13 +153,13 @@ export const DoctorAuthPage = ({ onAuthSuccess, onDemoDoctorLogin }) => {
               <select
                 value={formData.department}
                 onChange={(e) => setFormData({ ...formData, department: e.target.value })}
-                className="w-full px-3.5 py-2.5 bg-slate-50/60 border border-slate-200 rounded-xl text-slate-900 focus:bg-white focus:border-blue-600 focus:outline-none transition"
+                className="w-full px-3.5 py-2.5 bg-slate-50/60 border border-slate-200 rounded-xl text-slate-900 focus:bg-white focus:border-blue-600 focus:outline-none transition font-semibold"
               >
-                <option value="Emergency & Trauma">Emergency & Trauma (ER Senior Lead)</option>
-                <option value="Cardiology">Cardiology</option>
-                <option value="Neurology">Neurology</option>
-                <option value="Orthopedics">Orthopedics</option>
-                <option value="Bed Manager">Bed Manager & Allotment Staff</option>
+                <option value="Emergency & Trauma">Emergency & Trauma (ER Lead)</option>
+                <option value="Cardiology">Cardiology Unit</option>
+                <option value="Neurology">Neurology Department</option>
+                <option value="Orthopedics">Orthopedics Care</option>
+                <option value="Bed Management">Bed Management Staff</option>
               </select>
             </div>
 
@@ -133,6 +171,8 @@ export const DoctorAuthPage = ({ onAuthSuccess, onDemoDoctorLogin }) => {
               <span>Sign In to Clinical Portal</span>
               <ArrowRight size={15} />
             </button>
+
+
 
             {/* Switch to Signup */}
             <p className="text-center text-slate-500 font-medium pt-2">
@@ -167,11 +207,11 @@ export const DoctorAuthPage = ({ onAuthSuccess, onDemoDoctorLogin }) => {
 
           {/* Form Card Container */}
           <div className="bg-white rounded-3xl p-8 border border-slate-200/80 shadow-xl space-y-4">
-            <form onSubmit={handleSubmit} className="space-y-3.5 text-xs">
+            <form onSubmit={handleSignupSubmit} className="space-y-3.5 text-xs">
               
               {/* Full Name & Credentials */}
               <div className="space-y-1">
-                <label className="block font-bold text-slate-800">Full Name & Credentials</label>
+                <label className="block font-bold text-slate-800">Full Name & Title</label>
                 <input
                   type="text"
                   placeholder="Dr. Sarah Henderson, MD"
@@ -208,6 +248,22 @@ export const DoctorAuthPage = ({ onAuthSuccess, onDemoDoctorLogin }) => {
                 />
               </div>
 
+              {/* Role / Department Selection */}
+              <div className="space-y-1">
+                <label className="block font-bold text-slate-800">Clinical Department</label>
+                <select
+                  value={formData.department}
+                  onChange={(e) => setFormData({ ...formData, department: e.target.value })}
+                  className="w-full px-3.5 py-2.5 bg-slate-50/60 border border-slate-200 rounded-xl text-slate-900 focus:bg-white focus:border-blue-600 focus:outline-none transition font-semibold"
+                >
+                  <option value="Emergency & Trauma">Emergency & Trauma (ER Lead)</option>
+                  <option value="Cardiology">Cardiology Unit</option>
+                  <option value="Neurology">Neurology Department</option>
+                  <option value="Orthopedics">Orthopedics Care</option>
+                  <option value="Bed Management">Bed Management Staff</option>
+                </select>
+              </div>
+
               {/* Create Password */}
               <div className="space-y-1">
                 <label className="block font-bold text-slate-800">Create Password</label>
@@ -235,7 +291,7 @@ export const DoctorAuthPage = ({ onAuthSuccess, onDemoDoctorLogin }) => {
                 type="submit"
                 className="w-full py-3 px-4 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-md shadow-blue-500/20 transition active:scale-[0.99] mt-3"
               >
-                <span>Request Clinical Access</span>
+                <span>Register & Open Staff Dashboard</span>
                 <ArrowRight size={15} />
               </button>
 

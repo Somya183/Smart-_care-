@@ -72,106 +72,6 @@ export const EmergencyModal = ({ isOpen, onClose, onStartTriage }) => {
           {/* IDLE STATE: ADD EMERGENCY ADDRESS & DISPATCH BUTTON */}
           {ambulanceStatus === 'idle' && (
             <>
-              {/* ADD EMERGENCY PICKUP ADDRESS FORM */}
-              <div className="space-y-3 bg-slate-50 p-4 rounded-2xl border border-slate-200">
-                <div className="flex justify-between items-center border-b border-slate-200 pb-2">
-                  <span className="font-bold text-slate-900 text-xs flex items-center gap-1.5">
-                    <MapPin size={15} className="text-red-600" />
-                    Emergency Pickup Address
-                  </span>
-
-                  <button
-                    type="button"
-                    onClick={handleAutoDetectGPS}
-                    className="text-[11px] font-bold text-blue-700 hover:text-blue-800 bg-blue-50 hover:bg-blue-100 px-2.5 py-1 rounded-lg border border-blue-200 flex items-center gap-1 transition"
-                  >
-                    <Navigation size={12} />
-                    Auto-Detect GPS
-                  </button>
-                </div>
-
-                {/* Quick Saved Address Presets */}
-                <div className="flex gap-2 text-[11px]">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setAddressType('home');
-                      setCustomAddress('Flat 402, Block B, Green Park Extension, New Delhi - 110016');
-                    }}
-                    className={`flex-1 py-1.5 px-2 rounded-lg font-bold border flex items-center justify-center gap-1 transition ${
-                      addressType === 'home'
-                        ? 'bg-blue-600 text-white border-blue-600'
-                        : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-100'
-                    }`}
-                  >
-                    <Home size={12} />
-                    Home Address
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setAddressType('work');
-                      setCustomAddress('Building 10B, DLF Cyber City, Sector 24, Gurugram - 122002');
-                    }}
-                    className={`flex-1 py-1.5 px-2 rounded-lg font-bold border flex items-center justify-center gap-1 transition ${
-                      addressType === 'work'
-                        ? 'bg-blue-600 text-white border-blue-600'
-                        : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-100'
-                    }`}
-                  >
-                    <Building size={12} />
-                    Work / Office
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setAddressType('custom');
-                      setCustomAddress('');
-                    }}
-                    className={`flex-1 py-1.5 px-2 rounded-lg font-bold border flex items-center justify-center gap-1 transition ${
-                      addressType === 'custom'
-                        ? 'bg-blue-600 text-white border-blue-600'
-                        : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-100'
-                    }`}
-                  >
-                    <Plus size={12} />
-                    New Address
-                  </button>
-                </div>
-
-                {/* Full Address Input */}
-                <div className="space-y-2 pt-1">
-                  <div>
-                    <label className="block text-[11px] font-bold text-slate-700 mb-1">
-                      Full House / Street / Area Address:
-                    </label>
-                    <textarea
-                      rows={2}
-                      value={customAddress}
-                      onChange={(e) => setCustomAddress(e.target.value)}
-                      placeholder="Type complete emergency pickup address..."
-                      className="w-full text-xs text-slate-900 bg-white border border-slate-300 rounded-xl p-2.5 focus:border-blue-600 focus:outline-none"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-[11px] font-bold text-slate-700 mb-1">
-                      Nearby Landmark (Optional):
-                    </label>
-                    <input
-                      type="text"
-                      value={landmark}
-                      onChange={(e) => setLandmark(e.target.value)}
-                      placeholder="e.g. Opposite City Hospital, Gate 2"
-                      className="w-full text-xs text-slate-900 bg-white border border-slate-300 rounded-xl p-2 focus:border-blue-600 focus:outline-none"
-                    />
-                  </div>
-                </div>
-
-              </div>
-
               {/* DISPATCH AMBULANCE BUTTON */}
               <div className="space-y-2">
                 <label className="font-bold text-slate-900 text-xs block uppercase tracking-wider text-slate-500">
@@ -180,8 +80,7 @@ export const EmergencyModal = ({ isOpen, onClose, onStartTriage }) => {
                 
                 <button
                   onClick={handleCallAmbulance}
-                  disabled={!customAddress.trim()}
-                  className="w-full p-4 rounded-2xl bg-red-600 hover:bg-red-700 disabled:opacity-50 text-white font-extrabold text-sm flex items-center justify-between shadow-lg shadow-red-600/30 transition active:scale-[0.99] group"
+                  className="w-full p-4 rounded-2xl bg-red-600 hover:bg-red-700 text-white font-extrabold text-sm flex items-center justify-between shadow-lg shadow-red-600/30 transition active:scale-[0.99] group"
                 >
                   <div className="flex items-center gap-3 text-left">
                     <div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center group-hover:scale-110 transition">
@@ -232,12 +131,7 @@ export const EmergencyModal = ({ isOpen, onClose, onStartTriage }) => {
                 </p>
               </div>
 
-              {/* CONFIRMED PICKUP ADDRESS CARD */}
-              <div className="p-3 bg-blue-50 border border-blue-200 rounded-xl text-left text-xs">
-                <span className="font-bold text-blue-900 block text-[11px]">Confirmed Pickup Location:</span>
-                <p className="font-bold text-slate-900 mt-0.5">{customAddress}</p>
-                {landmark && <p className="text-[11px] text-slate-600 font-medium">Landmark: {landmark}</p>}
-              </div>
+
 
               {/* INDIAN AMBULANCE DATASET CARD */}
               <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-2.5 text-left text-xs">

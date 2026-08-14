@@ -10,14 +10,6 @@ const { GoogleGenerativeAI } = require('@google/generative-ai');
 
 class AIDiseasePredictor {
   constructor() {
-    this.geminiApiKey = process.env.GEMINI_API_KEY || '';
-    if (this.geminiApiKey) {
-      const genAI = new GoogleGenerativeAI(this.geminiApiKey);
-      this.model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
-    } else {
-      this.model = null;
-    }
-
     // Pretrained Clinical Knowledge Database (Fallback & Local Engine)
     this.diseaseDatabase = [
       // 1. CARDIOLOGY (HEART & CIRCULATION)
@@ -102,14 +94,29 @@ class AIDiseasePredictor {
   }
 
   /**
+   * Dynamically gets Gemini Model instance with active API Key
+   */
+  getGeminiModel() {
+    const apiKey = process.env.GEMINI_API_KEY || '';
+    if (!apiKey) return null;
+    try {
+      const genAI = new GoogleGenerativeAI(apiKey);
+      return genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+    } catch (e) {
+      return null;
+    }
+  }
+
+  /**
    * Predict diseases using Google Gemini AI or Pretrained Local Clinical Engine fallback
    * @param {Object} input - { symptomsText, painLevel, vitals }
    */
   async predictDiseaseAsync(input) {
-    const { symptomsText = '', painLevel = 5, vitals = {} } = input;
+    const { symptomsText = '', painLevel = 5 } = input;
+    const model = this.getGeminiModel();
 
     // Try Google Gemini LLM API if key is present
-    if (this.model && this.geminiApiKey) {
+    if (model) {
       try {
         const prompt = `
           You are an expert ER AI Triage Physician.
@@ -130,7 +137,7 @@ class AIDiseasePredictor {
           }
         `;
 
-        const result = await this.model.generateContent(prompt);
+        const result = await model.generateContent(prompt);
         const text = result.response.text().trim().replace(/```json|```/g, '');
         const parsed = JSON.parse(text);
         return {
