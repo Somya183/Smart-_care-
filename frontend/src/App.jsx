@@ -5,42 +5,92 @@ import { HomePage } from './pages/HomePage';
 import { PatientFlowWizard } from './components/patient/PatientFlowWizard';
 import { HospitalFlowDashboard } from './components/hospital/HospitalFlowDashboard';
 import { WaitingRoomView } from './components/patient/WaitingRoomView';
+import { BedManagementView } from './components/hospital/BedManagementView';
 
 function MainApp() {
   const [activeFlow, setActiveFlow] = useState('home');
   const [activeSidebarTab, setActiveSidebarTab] = useState('triage');
+  const [currentUser, setCurrentUser] = useState(null);
   const { isConnected } = useSocket();
+
+  const handleFlowChange = (flow) => {
+    setActiveFlow(flow);
+    if (flow === 'hospital') {
+      setActiveSidebarTab('dashboard');
+    } else if (flow === 'records') {
+      setActiveSidebarTab('records');
+    } else if (flow === 'waiting') {
+      setActiveSidebarTab('waiting');
+    } else if (flow === 'beds') {
+      setActiveSidebarTab('beds');
+    }
+  };
 
   const handleSidebarTabChange = (tab) => {
     setActiveSidebarTab(tab);
     if (tab === 'waiting') {
       setActiveFlow('waiting');
+    } else if (tab === 'beds') {
+      setActiveFlow('beds');
+    } else if (tab === 'records' || tab === 'triage') {
+      setActiveFlow('records');
     } else {
       setActiveFlow('hospital');
     }
+  };
+
+  const handleUserLogin = (user) => {
+    setCurrentUser(user);
+  };
+
+  const handleLogout = () => {
+    setCurrentUser(null);
+    setActiveFlow('home');
   };
 
   return (
     <div className="min-h-screen bg-slate-200 text-slate-900 flex flex-col font-sans">
       <SmartCareNavbar
         activeFlow={activeFlow}
-        setActiveFlow={setActiveFlow}
+        setActiveFlow={handleFlowChange}
         isConnected={isConnected}
       />
 
       <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto w-full">
         {activeFlow === 'home' && <HomePage onSelectFlow={(flow) => setActiveFlow(flow)} />}
-        {activeFlow === 'patient' && <PatientFlowWizard />}
-        {(activeFlow === 'hospital' || activeFlow === 'records' || activeFlow === 'beds') && (
+        
+        {activeFlow === 'patient' && (
+          <PatientFlowWizard 
+            user={currentUser} 
+            onLoginSuccess={handleUserLogin} 
+          />
+        )}
+        
+        {(activeFlow === 'hospital' || activeFlow === 'records') && (
           <HospitalFlowDashboard 
             activeTab={activeSidebarTab} 
             setActiveTab={handleSidebarTabChange} 
+            user={currentUser}
+            onLoginSuccess={handleUserLogin}
+            onLogout={handleLogout}
           />
         )}
+        
         {activeFlow === 'waiting' && (
           <WaitingRoomView 
             activeTab="waiting" 
             setActiveTab={handleSidebarTabChange} 
+            user={currentUser}
+            onLogout={handleLogout}
+          />
+        )}
+        
+        {activeFlow === 'beds' && (
+          <BedManagementView 
+            activeTab="beds" 
+            setActiveTab={handleSidebarTabChange} 
+            user={currentUser}
+            onLogout={handleLogout}
           />
         )}
       </main>

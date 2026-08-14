@@ -17,9 +17,20 @@ export const DoctorAuthPage = ({ onAuthSuccess, onDemoDoctorLogin }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    let name = formData.fullName.trim();
+    if (!name && formData.emailOrId) {
+      const emailPrefix = formData.emailOrId.split('@')[0];
+      const cleanParts = emailPrefix.split(/[\._\-]/).filter(Boolean);
+      name = cleanParts.map(p => p.charAt(0).toUpperCase() + p.slice(1)).join(' ');
+      if (!name.toLowerCase().startsWith('dr')) {
+        name = 'Dr. ' + name;
+      }
+    }
+    if (!name) name = 'Logged In Doctor';
+
     const staffUser = {
-      name: formData.fullName || (authMode === 'login' ? 'Dr. Henderson' : 'Dr. New Clinician'),
-      role: 'ER Senior Lead',
+      name: name,
+      role: formData.department || 'Emergency & Trauma',
       department: formData.department || 'Emergency & Trauma'
     };
     onAuthSuccess(staffUser);

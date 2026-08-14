@@ -4,35 +4,23 @@ import { Sparkles, Building2, Search, BedDouble, CheckCircle2, ArrowRight, Shiel
 import { predictDisease, fetchHospitals, fetchHospitalSeats, createUrgencyRequest } from '../../services/smartcareApi';
 import { useSocket } from '../../context/SocketContext';
 
-export const PatientFlowWizard = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [patientUser, setPatientUser] = useState(null);
+export const PatientFlowWizard = ({ user, onLoginSuccess }) => {
+  const [patientUser, setPatientUser] = useState(user || null);
 
-  const [step, setStep] = useState(1);
-  const [symptomsText, setSymptomsText] = useState(
-    'E.g., I woke up with a sharp pain in my lower right abdomen that has been getting worse over the last 3 hours...'
-  );
-  const [painLevel, setPainLevel] = useState(7);
+  useEffect(() => {
+    if (user) setPatientUser(user);
+  }, [user]);
 
-  const [aiResult, setAiResult] = useState(null);
-  const [hospitals, setHospitals] = useState([]);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedHospital, setSelectedHospital] = useState(null);
-  const [seats, setSeats] = useState([]);
-  const [selectedSeat, setSelectedSeat] = useState(null);
-  const [finalTicket, setFinalTicket] = useState(null);
-  const [loading, setLoading] = useState(false);
-
-  const { socket, joinPatientTracker } = useSocket();
-
-  const handleAuthSuccess = (user) => {
-    setPatientUser(user);
-    setIsAuthenticated(true);
+  const handleAuthSuccess = (u) => {
+    const p = { ...u, department: 'Patient Intake' };
+    setPatientUser(p);
+    if (onLoginSuccess) onLoginSuccess(p);
   };
 
   const handleGuestIntake = () => {
-    setPatientUser({ name: 'Guest Patient', email: 'guest@smartcare.org', dob: '01/01/1990' });
-    setIsAuthenticated(true);
+    const g = { name: 'Guest Patient', email: 'guest@smartcare.org', department: 'Emergency Patient' };
+    setPatientUser(g);
+    if (onLoginSuccess) onLoginSuccess(g);
   };
 
   // Run AI System Disease Prediction
@@ -96,7 +84,7 @@ export const PatientFlowWizard = () => {
   };
 
   // Render Login & Signup Page if not authenticated yet
-  if (!isAuthenticated) {
+  if (!patientUser) {
     return (
       <PatientAuthPage
         onAuthSuccess={handleAuthSuccess}

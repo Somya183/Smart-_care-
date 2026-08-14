@@ -2,11 +2,11 @@ import React from 'react';
 import { SmartCareSidebar } from '../common/SmartCareSidebar';
 import { Users, Clock, Building, AlertTriangle, Info } from 'lucide-react';
 
-export const WaitingRoomView = ({ activeTab = 'waiting', setActiveTab }) => {
+export const WaitingRoomView = ({ activeTab = 'waiting', setActiveTab, user, onLogout }) => {
   return (
     <div className="flex bg-slate-100 min-h-[680px] rounded-2xl overflow-hidden border border-slate-300 shadow-xl">
       {/* Left Sidebar */}
-      <SmartCareSidebar activeTab={activeTab} setActiveTab={setActiveTab} />
+      <SmartCareSidebar activeTab={activeTab} setActiveTab={setActiveTab} user={user} onLogout={onLogout} />
 
       {/* Main Content Area */}
       <main className="flex-1 p-6 space-y-6 overflow-y-auto max-w-5xl">
