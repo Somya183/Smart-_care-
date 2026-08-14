@@ -1,8 +1,8 @@
-# 🗄️ Database Schema & Relational Structure
+#  Database Schema & Relational Structure
 
 This project uses PostgreSQL for structured relational data management.
 
-## ERD Overview & Tables
+# ERD Overview & Tables
 
 ```
  +--------------------+       +---------------------+       +---------------------+
@@ -41,7 +41,7 @@ This project uses PostgreSQL for structured relational data management.
 
 ## Relational Tables Schema
 
-### 1. `users`
+# 1. `users`
 - `id` (UUID, PK)
 - `email` (VARCHAR 255, UNIQUE)
 - `password_hash` (VARCHAR 255)
@@ -49,7 +49,7 @@ This project uses PostgreSQL for structured relational data management.
 - `role` (ENUM: 'PATIENT', 'DOCTOR', 'NURSE', 'ADMIN')
 - `created_at` (TIMESTAMP)
 
-### 2. `patient_profiles`
+# 2. `patient_profiles`
 - `id` (UUID, PK)
 - `user_id` (UUID, FK -> `users.id`)
 - `date_of_birth` (DATE)
@@ -59,14 +59,14 @@ This project uses PostgreSQL for structured relational data management.
 - `allergies` (TEXT[])
 - `emergency_contact_phone` (VARCHAR 20)
 
-### 3. `departments`
+# 3. `departments`
 - `id` (UUID, PK)
 - `code` (VARCHAR 20, UNIQUE) - e.g. 'EMERGENCY_CARDIOLOGY'
 - `name` (VARCHAR 100)
 - `capacity` (INT)
 - `current_occupancy` (INT)
 
-### 4. `triage_cases`
+# 4. `triage_cases`
 - `id` (UUID, PK)
 - `patient_id` (UUID, FK -> `patient_profiles.id`)
 - `assigned_dept_id` (UUID, FK -> `departments.id`)
@@ -78,7 +78,7 @@ This project uses PostgreSQL for structured relational data management.
 - `status` (ENUM: 'QUEUED', 'IN_TRIAGE', 'WITH_DOCTOR', 'DISCHARGED', 'ADMITTED')
 - `created_at` (TIMESTAMP)
 
-### 5. `queue_items`
+# 5. `queue_items`
 - `id` (UUID, PK)
 - `case_id` (UUID, FK -> `triage_cases.id`, UNIQUE)
 - `department_id` (UUID, FK -> `departments.id`)
@@ -87,7 +87,7 @@ This project uses PostgreSQL for structured relational data management.
 - `wait_start_time` (TIMESTAMP)
 - `last_calculated_at` (TIMESTAMP)
 
-### 6. `audit_logs`
+# 6. `audit_logs`
 - `id` (UUID, PK)
 - `case_id` (UUID, FK)
 - `actor_id` (UUID, FK)
