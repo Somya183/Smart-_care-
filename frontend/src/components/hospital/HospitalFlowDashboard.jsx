@@ -1,8 +1,12 @@
 import React, { useState } from 'react';
+import { DoctorAuthPage } from './DoctorAuthPage';
 import { SmartCareSidebar } from '../common/SmartCareSidebar';
-import { Filter, ArrowUpDown, Truck, Activity, AlertCircle, PlusCircle } from 'lucide-react';
+import { Filter, ArrowUpDown, Truck, Activity, AlertCircle, PlusCircle, UserCheck } from 'lucide-react';
 
 export const HospitalFlowDashboard = ({ activeTab = 'triage', setActiveTab }) => {
+  const [isStaffAuthenticated, setIsStaffAuthenticated] = useState(false);
+  const [doctorUser, setDoctorUser] = useState(null);
+
   const [queue, setQueue] = useState([
     {
       id: 1,
@@ -66,6 +70,30 @@ export const HospitalFlowDashboard = ({ activeTab = 'triage', setActiveTab }) =>
     }
   ]);
 
+  const handleStaffAuthSuccess = (staff) => {
+    setDoctorUser(staff);
+    setIsStaffAuthenticated(true);
+  };
+
+  const handleDemoDoctorLogin = () => {
+    setDoctorUser({
+      name: 'Dr. Henderson',
+      role: 'ER Senior Lead',
+      department: 'Emergency & Trauma'
+    });
+    setIsStaffAuthenticated(true);
+  };
+
+  // Render Doctor / Staff Authentication Page if not logged in
+  if (!isStaffAuthenticated) {
+    return (
+      <DoctorAuthPage
+        onAuthSuccess={handleStaffAuthSuccess}
+        onDemoDoctorLogin={handleDemoDoctorLogin}
+      />
+    );
+  }
+
   return (
     <div className="flex bg-slate-100 min-h-[680px] rounded-2xl overflow-hidden border border-slate-300 shadow-xl">
       {/* Left Sidebar */}
@@ -80,7 +108,12 @@ export const HospitalFlowDashboard = ({ activeTab = 'triage', setActiveTab }) =>
           {/* Header & Filter Controls */}
           <div className="flex items-center justify-between border-b border-slate-100 pb-3">
             <div>
-              <h2 className="text-xl font-black text-slate-900 tracking-tight">Dynamic Priority Queue</h2>
+              <div className="flex items-center gap-2">
+                <h2 className="text-xl font-black text-slate-900 tracking-tight">Dynamic Priority Queue</h2>
+                <span className="text-[11px] px-2.5 py-0.5 rounded-full bg-blue-100 text-blue-800 font-bold">
+                  {doctorUser?.name || 'Dr. Henderson'} ({doctorUser?.role || 'ER Lead'})
+                </span>
+              </div>
               <p className="text-xs text-slate-500 font-medium mt-0.5">
                 Real-time triage tracking. Critical cases highlighted.
               </p>
