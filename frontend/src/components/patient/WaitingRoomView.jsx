@@ -1,8 +1,76 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { SmartCareSidebar } from '../common/SmartCareSidebar';
-import { Users, Clock, Building, AlertTriangle, Info } from 'lucide-react';
+import { Users, Clock, Building, AlertTriangle, Info, Bell, CheckCircle2, ArrowUp, Stethoscope, Activity, ShieldAlert } from 'lucide-react';
 
 export const WaitingRoomView = ({ activeTab = 'waiting', setActiveTab, user, onLogout }) => {
+  // Live Incoming Emergency Requests State (Persists accepted status until page refresh)
+  const [incomingRequests, setIncomingRequests] = useState([
+    {
+      id: 'REQ-9901',
+      patientName: 'Jane Doe (108 Ambulance Dispatch)',
+      urgency: 'Level 1 - Resuscitation / Critical',
+      urgencyNum: 1,
+      symptom: 'Cardiac Arrest & Severe Chest Pain',
+      dept: 'Trauma Bay 1 / Cardiology',
+      status: 'Pending',
+      timeAgo: '1 min ago'
+    },
+    {
+      id: 'REQ-9902',
+      patientName: 'Rahul Sharma',
+      urgency: 'Level 1 - Critical (Stroke Alert)',
+      urgencyNum: 1,
+      symptom: 'Slurred Speech, Sudden Facial Droop',
+      dept: 'Neurology CT Bay',
+      status: 'Pending',
+      timeAgo: '3 mins ago'
+    },
+    {
+      id: 'REQ-9903',
+      patientName: 'Priya Patel',
+      urgency: 'Level 2 - Emergent',
+      urgencyNum: 2,
+      symptom: 'Acute Appendicitis & High Fever',
+      dept: 'General Surgery / ER',
+      status: 'Pending',
+      timeAgo: '6 mins ago'
+    },
+    {
+      id: 'REQ-9904',
+      patientName: 'Vikas Gupta',
+      urgency: 'Level 3 - Urgent',
+      urgencyNum: 3,
+      symptom: 'Suspected Forearm Fracture',
+      dept: 'Orthopedics Care Room B',
+      status: 'Pending',
+      timeAgo: '12 mins ago'
+    }
+  ]);
+
+  // Handle Accept Emergency Request -> Updates status to 'Accepted'
+  const handleAcceptRequest = (id) => {
+    setIncomingRequests(prev => prev.map(req => {
+      if (req.id === id) {
+        return { ...req, status: 'Accepted' };
+      }
+      return req;
+    }));
+  };
+
+  // Handle Upgrade Urgency
+  const handleUpgradeUrgency = (id) => {
+    setIncomingRequests(prev => prev.map(req => {
+      if (req.id === id) {
+        return {
+          ...req,
+          urgency: 'Level 1 - Resuscitation / Critical (UPGRADED)',
+          urgencyNum: 1
+        };
+      }
+      return req;
+    }));
+  };
+
   return (
     <div className="flex bg-slate-100 min-h-[680px] rounded-2xl overflow-hidden border border-slate-300 shadow-xl">
       {/* Left Sidebar */}
@@ -11,18 +79,20 @@ export const WaitingRoomView = ({ activeTab = 'waiting', setActiveTab, user, onL
       {/* Main Content Area */}
       <main className="flex-1 p-6 space-y-6 overflow-y-auto max-w-5xl">
         
-        {/* Top Patient Info Card */}
+        {/* Top Patient Info Banner */}
         <div className="bg-white rounded-xl p-5 border border-slate-200 shadow-xs flex items-center justify-between">
           <div>
-            <h2 className="text-2xl font-black text-slate-900 tracking-tight">John Doe</h2>
+            <h2 className="text-2xl font-black text-slate-900 tracking-tight">
+              {user?.name || 'John Doe'}
+            </h2>
             <p className="text-xs font-semibold text-slate-500 mt-0.5">
-              DOB: 04/12/1985 &bull; MRN: 987654321
+              DOB: 04/12/1985 &bull; MRN: 987654321 &bull; {user?.department || 'ER Patient View'}
             </p>
           </div>
 
           <div className="px-3.5 py-1.5 rounded-lg bg-amber-100 border border-amber-300 text-amber-900 font-bold text-xs flex items-center gap-1.5 shadow-2xs">
             <AlertTriangle size={15} className="text-amber-600" />
-            Level 3 - Urgent
+            Level 3 - Urgent Priority
           </div>
         </div>
 
@@ -63,57 +133,111 @@ export const WaitingRoomView = ({ activeTab = 'waiting', setActiveTab, user, onL
           </div>
         </div>
 
-        {/* Current Status Progression Card */}
+        {/* INCOMING EMERGENCY REQUESTS & CASE URGENCY GATEWAY */}
         <div className="bg-white rounded-xl p-6 border border-slate-200 shadow-xs space-y-5">
-          <h3 className="font-bold text-base text-slate-900">Current Status Progression</h3>
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-100 pb-3 gap-2">
+            <div>
+              <h3 className="font-extrabold text-base text-slate-900 flex items-center gap-2">
+                <Bell size={18} className="text-red-600 animate-bounce" />
+                Incoming Emergency Requests & Case Urgency Gateway
+              </h3>
+              <p className="text-xs text-slate-500 font-medium mt-0.5">
+                Real-time patient emergency intakes categorized by severity level (Level 1 Resuscitation to Level 5 Non-Urgent).
+              </p>
+            </div>
 
-          {/* Progress Bar Container */}
-          <div className="space-y-2">
-            <div className="flex justify-between text-xs font-bold text-slate-600 px-1">
-              <span className="text-slate-700">Triage Complete</span>
-              <span className="text-blue-700 font-extrabold">Waiting</span>
-              <span className="text-slate-400">Treatment</span>
-            </div>
-            <div className="h-3 w-full bg-slate-200 rounded-full overflow-hidden relative">
-              <div className="h-full bg-amber-500 rounded-full w-[60%] transition-all duration-500"></div>
-            </div>
+            <span className="text-xs font-black text-red-700 bg-red-50 border border-red-200 px-3 py-1 rounded-full flex items-center gap-1 self-start sm:self-auto">
+              <ShieldAlert size={14} />
+              {incomingRequests.filter(r => r.urgencyNum === 1).length} Critical Resuscitation Alerts
+            </span>
           </div>
 
-          <p className="text-xs text-slate-500 flex items-center gap-1.5 font-medium">
-            <Info size={14} className="text-slate-400" />
-            Status updates dynamically based on ER load.
-          </p>
-        </div>
+          {/* Incoming Requests Table */}
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-xs border-collapse">
+              <thead>
+                <tr className="border-b border-slate-200 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+                  <th className="py-2.5 px-3">PATIENT NAME</th>
+                  <th className="py-2.5 px-3">CASE URGENCY LEVEL</th>
+                  <th className="py-2.5 px-3">DIAGNOSED SYMPTOM</th>
+                  <th className="py-2.5 px-3">REQUESTED DEPT</th>
+                  <th className="py-2.5 px-3 text-right">ACTION & ADMISSION</th>
+                </tr>
+              </thead>
 
-        {/* What to Expect Next Card */}
-        <div className="bg-white rounded-xl p-6 border border-slate-200 shadow-xs space-y-4">
-          <h3 className="font-bold text-base text-slate-900">What to Expect Next</h3>
+              <tbody className="divide-y divide-slate-100 font-medium">
+                {incomingRequests.map((req) => {
+                  let urgencyBadge = (
+                    <span className="px-2.5 py-1 rounded-md text-[11px] font-bold bg-blue-100 text-blue-800 border border-blue-200 whitespace-nowrap inline-block">
+                      {req.urgency}
+                    </span>
+                  );
+                  if (req.urgencyNum === 1) {
+                    urgencyBadge = (
+                      <span className="px-2.5 py-1 rounded-md text-[11px] font-bold bg-red-100 text-red-800 border border-red-300 animate-pulse whitespace-nowrap inline-block">
+                        {req.urgency}
+                      </span>
+                    );
+                  } else if (req.urgencyNum === 2) {
+                    urgencyBadge = (
+                      <span className="px-2.5 py-1 rounded-md text-[11px] font-bold bg-amber-100 text-amber-800 border border-amber-300 whitespace-nowrap inline-block">
+                        {req.urgency}
+                      </span>
+                    );
+                  }
 
-          <ol className="space-y-4 text-xs font-semibold text-slate-700">
-            <li className="flex items-start gap-3">
-              <span className="w-2.5 h-2.5 rounded-full bg-blue-700 mt-1 shrink-0"></span>
-              <div>
-                <span className="font-bold text-slate-900 text-sm block">1. Initial Assessment</span>
-                <p className="text-slate-500 font-medium">A nurse has recorded your vitals and initial complaint (Completed).</p>
-              </div>
-            </li>
+                  const isAccepted = req.status === 'Accepted';
 
-            <li className="flex items-start gap-3">
-              <span className="w-2.5 h-2.5 rounded-full bg-slate-300 mt-1 shrink-0"></span>
-              <div>
-                <span className="font-bold text-slate-900 text-sm block">2. Call to Treatment Room</span>
-                <p className="text-slate-500 font-medium">You will be called to Treatment Room B when it becomes available.</p>
-              </div>
-            </li>
+                  return (
+                    <tr key={req.id} className="hover:bg-slate-50 transition">
+                      <td className="py-3.5 px-3 font-bold text-slate-900 text-sm">
+                        {req.patientName}
+                        <span className="block text-[10px] text-slate-400 font-normal font-mono">{req.id} &bull; {req.timeAgo}</span>
+                      </td>
 
-            <li className="flex items-start gap-3">
-              <span className="w-2.5 h-2.5 rounded-full bg-slate-300 mt-1 shrink-0"></span>
-              <div>
-                <span className="font-bold text-slate-900 text-sm block">3. Physician Consultation</span>
-                <p className="text-slate-500 font-medium">A doctor will examine you and order any necessary tests or treatments.</p>
-              </div>
-            </li>
-          </ol>
+                      <td className="py-3.5 px-3">
+                        {urgencyBadge}
+                      </td>
+
+                      <td className="py-3.5 px-3 text-slate-700 font-medium">
+                        {req.symptom}
+                      </td>
+
+                      <td className="py-3.5 px-3 font-bold text-slate-900">
+                        {req.dept}
+                      </td>
+
+                      <td className="py-3.5 px-3 text-right">
+                        {isAccepted ? (
+                          <span className="px-3.5 py-1.5 rounded-lg bg-emerald-100 border border-emerald-300 text-emerald-800 font-extrabold text-xs inline-flex items-center gap-1.5 shadow-2xs whitespace-nowrap">
+                            <CheckCircle2 size={15} className="text-emerald-700" />
+                            Accepted
+                          </span>
+                        ) : (
+                          <div className="flex items-center justify-end gap-2">
+                            <button
+                              onClick={() => handleUpgradeUrgency(req.id)}
+                              className="px-2.5 py-1 rounded-lg bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 text-xs font-bold transition flex items-center gap-1"
+                              title="Upgrade to Level 1 Critical"
+                            >
+                              <ArrowUp size={13} /> Level 1
+                            </button>
+
+                            <button
+                              onClick={() => handleAcceptRequest(req.id)}
+                              className="px-3.5 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold transition shadow-xs"
+                            >
+                              Accept & Admit
+                            </button>
+                          </div>
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
         </div>
 
       </main>

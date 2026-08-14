@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
-import { PlusSquare, Search, AlertCircle, User, Settings, Home, Activity } from 'lucide-react';
+import { PlusSquare, Search, AlertCircle, User, Settings, Home, Activity, Stethoscope, LogOut } from 'lucide-react';
 import { EmergencyModal } from './EmergencyModal';
 
-export const SmartCareNavbar = ({ activeFlow, setActiveFlow, isConnected }) => {
+export const SmartCareNavbar = ({ activeFlow, setActiveFlow, isConnected, onLogout }) => {
   const [isEmergencyModalOpen, setIsEmergencyModalOpen] = useState(false);
 
+  const isHomeView = activeFlow === 'home';
   const isPatientView = activeFlow === 'patient';
+  const isStaffView = ['hospital', 'records', 'waiting', 'beds', 'admin'].includes(activeFlow);
 
   return (
     <>
@@ -25,8 +27,11 @@ export const SmartCareNavbar = ({ activeFlow, setActiveFlow, isConnected }) => {
 
         {/* Center Navigation Links */}
         <nav className="hidden md:flex items-center gap-6 text-sm font-semibold text-slate-700">
-          {/* IF PATIENT VIEW: Show Patient Portal Navigation */}
-          {isPatientView ? (
+          
+
+
+          {/* PATIENT VIEW: Show Patient Intake Links */}
+          {isPatientView && (
             <>
               <button
                 onClick={() => setActiveFlow('home')}
@@ -44,8 +49,10 @@ export const SmartCareNavbar = ({ activeFlow, setActiveFlow, isConnected }) => {
                 Patient Intake & AI Triage
               </button>
             </>
-          ) : (
-            /* IF CLINICAL / STAFF VIEW: Show Staff Tabs */
+          )}
+
+          {/* CLINICAL STAFF VIEW: Show Staff Management Tabs */}
+          {isStaffView && (
             <>
               <button
                 onClick={() => setActiveFlow('hospital')}
@@ -82,23 +89,13 @@ export const SmartCareNavbar = ({ activeFlow, setActiveFlow, isConnected }) => {
               >
                 Bed Management
               </button>
-
-
             </>
           )}
         </nav>
 
-        {/* Right Section: Search & Emergency Alert Button */}
+        {/* Right Section: Search, Emergency Alert & Log Out Button */}
         <div className="flex items-center gap-3">
-          {/* Search Box */}
-          <div className="relative hidden sm:block w-44 lg:w-56">
-            <Search size={14} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400" />
-            <input
-              type="text"
-              placeholder="Search..."
-              className="w-full bg-white border border-slate-300 rounded-md pl-8 pr-3 py-1 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-blue-600"
-            />
-          </div>
+
 
           {/* Emergency Alert Button */}
           <button 
@@ -108,6 +105,17 @@ export const SmartCareNavbar = ({ activeFlow, setActiveFlow, isConnected }) => {
             <AlertCircle size={15} />
             Emergency Alert
           </button>
+
+          {/* Log Out Button */}
+          {!isHomeView && (
+            <button
+              onClick={onLogout}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-slate-200 hover:bg-red-50 hover:text-red-700 text-slate-700 font-bold text-xs transition border border-slate-300"
+            >
+              <LogOut size={14} />
+              Log Out
+            </button>
+          )}
 
           {/* Action icons */}
           <div className="hidden sm:flex items-center gap-2 text-slate-600 ml-1">

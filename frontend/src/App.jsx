@@ -6,6 +6,8 @@ import { PatientFlowWizard } from './components/patient/PatientFlowWizard';
 import { HospitalFlowDashboard } from './components/hospital/HospitalFlowDashboard';
 import { WaitingRoomView } from './components/patient/WaitingRoomView';
 import { BedManagementView } from './components/hospital/BedManagementView';
+import { AdminAnalyticsView } from './components/hospital/AdminAnalyticsView';
+import { StaffScheduleView } from './components/hospital/StaffScheduleView';
 
 function MainApp() {
   const [activeFlow, setActiveFlow] = useState('home');
@@ -23,6 +25,10 @@ function MainApp() {
       setActiveSidebarTab('waiting');
     } else if (flow === 'beds') {
       setActiveSidebarTab('beds');
+    } else if (flow === 'admin') {
+      setActiveSidebarTab('admin');
+    } else if (flow === 'schedule') {
+      setActiveSidebarTab('schedule');
     }
   };
 
@@ -32,6 +38,10 @@ function MainApp() {
       setActiveFlow('waiting');
     } else if (tab === 'beds') {
       setActiveFlow('beds');
+    } else if (tab === 'admin') {
+      setActiveFlow('admin');
+    } else if (tab === 'schedule') {
+      setActiveFlow('schedule');
     } else if (tab === 'records' || tab === 'triage') {
       setActiveFlow('records');
     } else {
@@ -54,6 +64,7 @@ function MainApp() {
         activeFlow={activeFlow}
         setActiveFlow={handleFlowChange}
         isConnected={isConnected}
+        onLogout={handleLogout}
       />
 
       <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto w-full">
@@ -88,6 +99,24 @@ function MainApp() {
         {activeFlow === 'beds' && (
           <BedManagementView 
             activeTab="beds" 
+            setActiveTab={handleSidebarTabChange} 
+            user={currentUser}
+            onLogout={handleLogout}
+          />
+        )}
+
+        {activeFlow === 'admin' && (
+          <AdminAnalyticsView 
+            activeTab="admin" 
+            setActiveTab={handleSidebarTabChange} 
+            user={currentUser}
+            onLogout={handleLogout}
+          />
+        )}
+
+        {activeFlow === 'schedule' && (
+          <StaffScheduleView 
+            activeTab="schedule" 
             setActiveTab={handleSidebarTabChange} 
             user={currentUser}
             onLogout={handleLogout}

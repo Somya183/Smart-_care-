@@ -21,26 +21,11 @@ export const SmartCareSidebar = ({ activeTab, setActiveTab, user, onLogout }) =>
           </div>
         </div>
 
-        {/* Emergency Code Blue Button (Matching Screenshot 2 & 3) */}
-        <button className="w-full py-2 px-3 rounded-lg bg-red-700 hover:bg-red-800 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-xs transition">
-          <Asterisk size={15} />
-          Trigger Code Blue
-        </button>
+
 
         {/* Navigation Items */}
         <nav className="space-y-1.5 pt-2">
-          {/* Real-time Triage */}
-          <button
-            onClick={() => setActiveTab('triage')}
-            className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-semibold transition ${
-              activeTab === 'triage'
-                ? 'bg-blue-700 text-white shadow-xs'
-                : 'text-slate-600 hover:bg-slate-200/70 hover:text-slate-900'
-            }`}
-          >
-            <Activity size={16} />
-            Real-time Triage
-          </button>
+
 
           {/* Waiting Room */}
           <button
@@ -55,18 +40,7 @@ export const SmartCareSidebar = ({ activeTab, setActiveTab, user, onLogout }) =>
             Waiting Room
           </button>
 
-          {/* Ambulance ETA */}
-          <button
-            onClick={() => setActiveTab('ambulance')}
-            className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-semibold transition ${
-              activeTab === 'ambulance'
-                ? 'bg-blue-700 text-white shadow-xs'
-                : 'text-slate-600 hover:bg-slate-200/70 hover:text-slate-900'
-            }`}
-          >
-            <Truck size={16} />
-            Ambulance ETA
-          </button>
+
 
           {/* Staff Schedule */}
           <button
@@ -75,6 +49,19 @@ export const SmartCareSidebar = ({ activeTab, setActiveTab, user, onLogout }) =>
           >
             <Calendar size={16} />
             Staff Schedule
+          </button>
+
+          {/* Admin & Analytics */}
+          <button
+            onClick={() => setActiveTab('admin')}
+            className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-semibold transition ${
+              activeTab === 'admin'
+                ? 'bg-blue-700 text-white shadow-xs'
+                : 'text-slate-600 hover:bg-slate-200/70 hover:text-slate-900'
+            }`}
+          >
+            <Activity size={16} />
+            Admin & Analytics
           </button>
 
           {/* Notifications */}

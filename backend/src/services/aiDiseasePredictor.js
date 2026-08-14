@@ -1,77 +1,90 @@
 /**
- * SmartCare AI - Disease Prediction Engine
- * Analyzes natural language symptoms, suggests specific disease predictions,
- * calculates probability scores, severity levels, and department suggestions.
+ * SmartCare Pretrained AI Clinical Diagnostic Engine & Department Router
+ * Analyzes natural language symptoms, predicts specific medical conditions,
+ * calculates confidence scores, emergency severity levels (Level 1-5),
+ * and routes patients to the exact specialized hospital department.
  */
 
 class AIDiseasePredictor {
   constructor() {
     this.diseaseDatabase = [
+      // 1. CARDIOLOGY (HEART & CIRCULATION)
       {
         id: 'dis_001',
-        name: 'Acute Myocardial Infarction (Heart Attack)',
+        name: 'Acute Myocardial Infarction (Heart Attack / Coronary Syndrome)',
         category: 'Cardiovascular Emergency',
-        keywords: ['chest pain', 'crushing chest', 'left arm pain', 'shortness of breath', 'sweating', 'diaphoresis', 'palpitations'],
-        baseProbability: 0.94,
-        severity: 'CRITICAL',
+        keywords: ['heart', 'chest pain', 'crushing chest', 'left arm pain', 'angina', 'palpitations', 'cardiac', 'shortness of breath', 'racing heart', 'sweating'],
+        baseProbability: 0.95,
+        severity: 'Level 1 - Critical (Immediate Resuscitation)',
+        triageLevel: 1,
         recommendedSpecialty: 'Cardiology',
-        urgencyLevel: 'HIGH',
-        precautions: ['Avoid exertion', 'Administer supplemental oxygen', 'Immediate EKG required']
+        departmentCode: 'cardiology',
+        precautions: ['Avoid exertion', 'Administer supplemental oxygen', 'Immediate EKG & Cardiac Monitor']
       },
+      // 2. NEUROLOGY (BRAIN & NERVOUS SYSTEM)
       {
         id: 'dis_002',
-        name: 'Acute Ischemic Stroke',
+        name: 'Acute Ischemic Stroke / Cerebrovascular Attack',
         category: 'Neurological Emergency',
-        keywords: ['facial droop', 'slurred speech', 'arm weakness', 'sudden numbness', 'loss of balance', 'confusion'],
-        baseProbability: 0.92,
-        severity: 'CRITICAL',
+        keywords: ['brain', 'headache', 'slurred speech', 'facial droop', 'arm weakness', 'numbness', 'seizure', 'dizziness', 'fainting', 'stroke', 'paralysis'],
+        baseProbability: 0.93,
+        severity: 'Level 1 - Critical',
+        triageLevel: 1,
         recommendedSpecialty: 'Neurology',
-        urgencyLevel: 'HIGH',
-        precautions: ['Check FAST protocol', 'Keep patient elevated', 'Prepare CT scan']
+        departmentCode: 'neurology',
+        precautions: ['Check FAST protocol', 'Keep head elevated 30 degrees', 'Prepare Stat Brain CT Scan']
       },
+      // 3. ORTHOPEDICS (BONES, JOINTS & TRAUMA)
       {
         id: 'dis_003',
-        name: 'Acute Asthma Exacerbation / Bronchospasm',
-        category: 'Respiratory Distress',
-        keywords: ['wheezing', 'difficulty breathing', 'coughing', 'chest tightness', 'gasping'],
-        baseProbability: 0.88,
-        severity: 'URGENT',
-        recommendedSpecialty: 'Pulmonology',
-        urgencyLevel: 'MEDIUM',
-        precautions: ['Nebulizer therapy', 'Monitor SpO2 saturation']
+        name: 'Acute Bone Fracture / Musculoskeletal Trauma',
+        category: 'Orthopedic Trauma',
+        keywords: ['bone', 'fracture', 'joint', 'knee', 'leg pain', 'arm pain', 'swelling', 'inability to walk', 'dislocation', 'spine pain', 'broken'],
+        baseProbability: 0.90,
+        severity: 'Level 3 - Urgent',
+        triageLevel: 3,
+        recommendedSpecialty: 'Orthopedics',
+        departmentCode: 'orthopedics',
+        precautions: ['Immobilize limb with splint', 'Stat X-Ray evaluation', 'Pain management']
       },
+      // 4. GASTROENTEROLOGY & GENERAL SURGERY (ABDOMEN & STOMACH)
       {
         id: 'dis_004',
-        name: 'Acute Appendicitis',
+        name: 'Acute Appendicitis / Peritonitis Risk',
         category: 'Gastrointestinal Emergency',
-        keywords: ['right lower abdominal pain', 'rebound tenderness', 'nausea', 'vomiting', 'fever', 'loss of appetite'],
-        baseProbability: 0.86,
-        severity: 'URGENT',
-        recommendedSpecialty: 'General Surgery',
-        urgencyLevel: 'MEDIUM',
-        precautions: ['NPO (Nothing by mouth)', 'Abdominal ultrasound', 'IV fluids']
+        keywords: ['abdomen', 'stomach', 'appendix', 'right lower abdominal pain', 'rebound tenderness', 'nausea', 'vomiting', 'gut pain'],
+        baseProbability: 0.88,
+        severity: 'Level 2 - Emergent',
+        triageLevel: 2,
+        recommendedSpecialty: 'Gastroenterology & General Surgery',
+        departmentCode: 'gastroenterology',
+        precautions: ['NPO (Nothing by mouth)', 'Abdominal Ultrasound / CT', 'IV Fluids & Antibiotics']
       },
+      // 5. PULMONOLOGY (LUNGS & RESPIRATORY)
       {
         id: 'dis_005',
-        name: 'Acute Gastroenteritis / Dehydration',
-        category: 'Gastrointestinal',
-        keywords: ['diarrhea', 'stomach cramps', 'nausea', 'vomiting', 'mild fever', 'dehydration'],
-        baseProbability: 0.82,
-        severity: 'MODERATE',
-        recommendedSpecialty: 'General Medicine',
-        urgencyLevel: 'LOW',
-        precautions: ['Oral rehydration salts', 'Probiotics', 'Fluid monitoring']
+        name: 'Acute Asthma Exacerbation / Respiratory Failure',
+        category: 'Respiratory Distress',
+        keywords: ['lung', 'asthma', 'cough', 'wheezing', 'difficulty breathing', 'gasping', 'shortness of breath', 'phlegm'],
+        baseProbability: 0.89,
+        severity: 'Level 2 - Emergent',
+        triageLevel: 2,
+        recommendedSpecialty: 'Pulmonology',
+        departmentCode: 'pulmonology',
+        precautions: ['Bronchodilator nebulizer', 'Monitor SpO2 oxygen level', 'Steroid therapy']
       },
+      // 6. NEPHROLOGY & UROLOGY (KIDNEY & URINARY)
       {
         id: 'dis_006',
-        name: 'Fracture / Acute Trauma',
-        category: 'Orthopedic Trauma',
-        keywords: ['bone pain', 'swelling', 'inability to bear weight', 'deformity', 'fall injury'],
-        baseProbability: 0.90,
-        severity: 'URGENT',
-        recommendedSpecialty: 'Orthopedics',
-        urgencyLevel: 'MEDIUM',
-        precautions: ['Immobilize limb', 'X-ray evaluation', 'Analgesics']
+        name: 'Renal Calculi (Kidney Stone) / Severe Colic',
+        category: 'Urinary Tract Emergency',
+        keywords: ['kidney', 'urine', 'flank pain', 'back loin pain', 'burning urination', 'blood in urine', 'renal'],
+        baseProbability: 0.86,
+        severity: 'Level 3 - Urgent',
+        triageLevel: 3,
+        recommendedSpecialty: 'Nephrology & Urology',
+        departmentCode: 'urology',
+        precautions: ['IV Analgesics', 'KUB Ultrasound', 'Hydration therapy']
       }
     ];
   }
@@ -89,7 +102,7 @@ class AIDiseasePredictor {
     for (const disease of this.diseaseDatabase) {
       const matchCount = disease.keywords.filter(kw => textLower.includes(kw)).length;
       if (matchCount > 0) {
-        const confidence = Math.min(0.99, disease.baseProbability + (matchCount * 0.02) + (painLevel >= 8 ? 0.03 : 0));
+        const confidence = Math.min(0.99, disease.baseProbability + (matchCount * 0.03) + (painLevel >= 8 ? 0.02 : 0));
         matchedDiseases.push({
           ...disease,
           confidence: Math.round(confidence * 100) / 100,
@@ -98,21 +111,23 @@ class AIDiseasePredictor {
       }
     }
 
-    // Sort by confidence score descending
+    // Sort by match score and confidence score descending
     matchedDiseases.sort((a, b) => b.confidence - a.confidence);
 
     if (matchedDiseases.length === 0) {
-      // Fallback prediction
+      // Fallback AI prediction
+      const isHighPain = painLevel >= 7;
       matchedDiseases.push({
         id: 'dis_def',
         name: 'General Acute Distress Syndrome',
-        category: 'General Medicine',
+        category: 'General Emergency',
         keywords: [],
-        confidence: 0.75,
-        severity: painLevel >= 7 ? 'URGENT' : 'MODERATE',
-        recommendedSpecialty: 'General ER',
-        urgencyLevel: painLevel >= 7 ? 'HIGH' : 'LOW',
-        precautions: ['Nurse evaluation', 'Standard blood panel']
+        confidence: 0.78,
+        severity: isHighPain ? 'Level 2 - Emergent' : 'Level 4 - Less Urgent',
+        triageLevel: isHighPain ? 2 : 4,
+        recommendedSpecialty: 'General ER & Triage',
+        departmentCode: 'general_er',
+        precautions: ['Nurse initial vitals assessment', 'General triage evaluation']
       });
     }
 
@@ -122,7 +137,9 @@ class AIDiseasePredictor {
       primaryPrediction,
       differentialDiagnosis: matchedDiseases.slice(1, 4),
       severity: primaryPrediction.severity,
+      triageLevel: primaryPrediction.triageLevel,
       suggestedSpecialty: primaryPrediction.recommendedSpecialty,
+      departmentCode: primaryPrediction.departmentCode,
       recommendedActions: primaryPrediction.precautions
     };
   }
