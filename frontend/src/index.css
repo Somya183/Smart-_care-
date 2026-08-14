@@ -1,167 +1,114 @@
-/* MedPulse ER - Core Design System & Aesthetic Styling */
-:root {
-  --bg-dark: #080c14;
-  --bg-card: rgba(16, 24, 40, 0.75);
-  --bg-card-hover: rgba(23, 34, 56, 0.9);
-  --border-glass: rgba(255, 255, 255, 0.08);
-  --text-primary: #f8fafc;
-  --text-secondary: #94a3b8;
-  --text-muted: #64748b;
-  --accent-cyan: #06b6d4;
-  --accent-blue: #3b82f6;
-  
-  /* Emergency Triage Levels Palette */
-  --lvl1-red: #ef4444;
-  --lvl1-glow: rgba(239, 68, 68, 0.35);
-  --lvl2-orange: #f97316;
-  --lvl2-glow: rgba(249, 115, 22, 0.35);
-  --lvl3-yellow: #eab308;
-  --lvl3-glow: rgba(234, 179, 8, 0.35);
-  --lvl4-green: #10b981;
-  --lvl4-glow: rgba(16, 185, 129, 0.35);
-  --lvl5-blue: #3b82f6;
-  --lvl5-glow: rgba(59, 130, 246, 0.35);
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 
-  --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-  --radius-sm: 8px;
-  --radius-md: 14px;
-  --radius-lg: 20px;
-  --shadow-glow: 0 0 25px rgba(6, 182, 212, 0.15);
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg-slate: #f1f5f9;
+  --bg-card: #ffffff;
+  --border-subtle: #e2e8f0;
+  --text-dark: #0f172a;
+  --text-muted: #64748b;
+  
+  --brand-blue: #0284c7;
+  --brand-blue-hover: #0369a1;
+  --alert-red: #dc2626;
+  --alert-red-hover: #b91c1c;
+
+  /* Level Colors */
+  --lvl1-bg: #fee2e2;
+  --lvl1-text: #991b1b;
+  --lvl1-badge: #ef4444;
+
+  --lvl2-bg: #ffedd5;
+  --lvl2-text: #9a3412;
+  --lvl2-badge: #f97316;
+
+  --lvl3-bg: #fef9c3;
+  --lvl3-text: #854d0e;
+  --lvl3-badge: #eab308;
+
+  --lvl4-bg: #d1fae5;
+  --lvl4-text: #065f46;
+  --lvl4-badge: #10b981;
+
+  --lvl5-bg: #dbeafe;
+  --lvl5-text: #1e40af;
+  --lvl5-badge: #3b82f6;
+
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
 * {
   box-sizing: border-box;
-  margin: 0;
-  padding: 0;
 }
 
 body {
-  background-color: var(--bg-dark);
-  color: var(--text-primary);
+  background-color: #e2e8f0;
+  color: var(--text-dark);
   font-family: var(--font-sans);
   min-height: 100vh;
   overflow-x: hidden;
   line-height: 1.5;
 }
 
-/* Glassmorphism containers */
-.glass-panel {
-  background: var(--bg-card);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid var(--border-glass);
-  border-radius: var(--radius-md);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
 }
-
-.glass-nav {
-  background: rgba(8, 12, 20, 0.85);
-  backdrop-filter: blur(20px);
-  border-bottom: 1px solid var(--border-glass);
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
 }
-
-/* Layout container */
-.app-container {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem 1.5rem;
-}
-
-/* Triage Level Badges */
-.badge-level {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.35rem 0.85rem;
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
   border-radius: 9999px;
-  font-weight: 700;
-  font-size: 0.825rem;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
 }
 
-.badge-level-1 {
-  background: rgba(239, 68, 68, 0.15);
-  color: #fca5a5;
-  border: 1px solid var(--lvl1-red);
-  box-shadow: 0 0 12px var(--lvl1-glow);
-  animation: pulse-red 2s infinite;
+/* Level Circle Badges */
+.lvl-badge {
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 0.85rem;
+  color: #ffffff;
 }
 
-.badge-level-2 {
-  background: rgba(249, 115, 22, 0.15);
-  color: #fdba74;
-  border: 1px solid var(--lvl2-orange);
-  box-shadow: 0 0 10px var(--lvl2-glow);
-}
+.lvl-badge-1 { background-color: var(--lvl1-badge); }
+.lvl-badge-2 { background-color: var(--lvl2-badge); }
+.lvl-badge-3 { background-color: var(--lvl3-badge); }
+.lvl-badge-4 { background-color: var(--lvl4-badge); }
+.lvl-badge-5 { background-color: var(--lvl5-badge); }
 
-.badge-level-3 {
-  background: rgba(234, 179, 8, 0.15);
-  color: #fde047;
-  border: 1px solid var(--lvl3-yellow);
-}
-
-.badge-level-4 {
-  background: rgba(16, 185, 129, 0.15);
-  color: #6ee7b7;
-  border: 1px solid var(--lvl4-green);
-}
-
-.badge-level-5 {
-  background: rgba(59, 130, 246, 0.15);
-  color: #93c5fd;
-  border: 1px solid var(--lvl5-blue);
-}
-
-/* Micro-animations */
-@keyframes pulse-red {
-  0%, 100% {
-    box-shadow: 0 0 12px var(--lvl1-glow);
-  }
-  50% {
-    box-shadow: 0 0 24px rgba(239, 68, 68, 0.7);
-  }
-}
-
-/* Modern inputs & buttons */
-input, textarea, select {
-  width: 100%;
-  background: rgba(15, 23, 42, 0.6);
-  border: 1px solid var(--border-glass);
-  border-radius: var(--radius-sm);
-  color: #fff;
-  padding: 0.75rem 1rem;
-  font-family: inherit;
-  font-size: 0.95rem;
-  transition: all 0.2s ease;
-}
-
-input:focus, textarea:focus, select:focus {
-  outline: none;
-  border-color: var(--accent-cyan);
-  box-shadow: 0 0 10px rgba(6, 182, 212, 0.3);
-}
-
-.btn-primary {
-  background: linear-gradient(135deg, #0284c7 0%, #2563eb 100%);
-  color: #fff;
+/* Buttons */
+.btn-blue {
+  background-color: var(--brand-blue);
+  color: #ffffff;
   font-weight: 600;
-  padding: 0.85rem 1.5rem;
-  border-radius: var(--radius-sm);
+  font-size: 0.875rem;
+  padding: 0.625rem 1.25rem;
+  border-radius: 0.5rem;
   border: none;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  transition: transform 0.15s ease, box-shadow 0.2s ease;
+  transition: background-color 0.15s ease, transform 0.10s ease;
 }
 
-.btn-primary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(37, 99, 235, 0.4);
+.btn-blue:hover {
+  background-color: var(--brand-blue-hover);
 }
 
-.btn-primary:active {
-  transform: translateY(0);
+.btn-blue:active {
+  transform: scale(0.98);
 }

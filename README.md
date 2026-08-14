@@ -1,4 +1,4 @@
-# SMARTCARE - AI Smart Hospital Emergency Management System
+# 🏥 SMARTCARE - AI Smart Hospital Emergency Management System
 
 An end-to-end Smart Emergency Management System featuring AI Triage (Levels 1–5), Dynamic Priority Queueing, WebSocket Real-Time Dashboards, PWA Patient Tracking, and Relational Database Schema.
 
