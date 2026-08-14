@@ -44,10 +44,6 @@ function MainApp() {
           />
         )}
       </main>
-
-      <footer className="border-t border-slate-300 bg-slate-100 py-3 text-center text-xs font-semibold text-slate-500">
-        SmartCare &copy; 2026 AI System for Hospital Disease Prediction & Real-Time Emergency Management
-      </footer>
     </div>
   );
 }

@@ -1,5 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 :root {
   --bg-slate: #f1f5f9;
   --bg-card: #ffffff;
@@ -38,8 +42,6 @@
 
 * {
   box-sizing: border-box;
-  margin: 0;
-  padding: 0;
 }
 
 body {
@@ -67,15 +69,6 @@ body {
   background: #94a3b8;
 }
 
-/* Card Container Base */
-.portal-frame {
-  background-color: #f8fafc;
-  border-radius: 1.5rem;
-  border: 1px solid #cbd5e1;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
-  overflow: hidden;
-}
-
 /* Level Circle Badges */
 .lvl-badge {
   width: 1.75rem;
@@ -95,24 +88,6 @@ body {
 .lvl-badge-4 { background-color: var(--lvl4-badge); }
 .lvl-badge-5 { background-color: var(--lvl5-badge); }
 
-/* Standard Inputs & Textarea */
-input, textarea, select {
-  font-family: inherit;
-  font-size: 0.875rem;
-  border-radius: 0.5rem;
-  border: 1px solid #cbd5e1;
-  padding: 0.625rem 0.875rem;
-  background-color: #ffffff;
-  color: #0f172a;
-  transition: all 0.15s ease-in-out;
-}
-
-input:focus, textarea:focus, select:focus {
-  outline: none;
-  border-color: var(--brand-blue);
-  box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
-}
-
 /* Buttons */
 .btn-blue {
   background-color: var(--brand-blue);
@@ -127,7 +102,7 @@ input:focus, textarea:focus, select:focus {
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  transition: background-color 0.15s ease, transform 0.1s ease;
+  transition: background-color 0.15s ease, transform 0.10s ease;
 }
 
 .btn-blue:hover {
@@ -136,24 +111,4 @@ input:focus, textarea:focus, select:focus {
 
 .btn-blue:active {
   transform: scale(0.98);
-}
-
-.btn-red {
-  background-color: var(--alert-red);
-  color: #ffffff;
-  font-weight: 700;
-  font-size: 0.875rem;
-  padding: 0.625rem 1rem;
-  border-radius: 0.5rem;
-  border: none;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  transition: background-color 0.15s ease;
-}
-
-.btn-red:hover {
-  background-color: var(--alert-red-hover);
 }

@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Sparkles, Building2, Search, BedDouble, CheckCircle2, ArrowRight, ShieldAlert, HeartPulse, Clock, FileText } from 'lucide-react';
+import { PatientAuthPage } from './PatientAuthPage';
+import { Sparkles, Building2, Search, BedDouble, CheckCircle2, ArrowRight, ShieldAlert, HeartPulse, Clock, FileText, User } from 'lucide-react';
 import { predictDisease, fetchHospitals, fetchHospitalSeats, createUrgencyRequest } from '../../services/smartcareApi';
 import { useSocket } from '../../context/SocketContext';
 
 export const PatientFlowWizard = () => {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [patientUser, setPatientUser] = useState(null);
+
   const [step, setStep] = useState(1);
   const [symptomsText, setSymptomsText] = useState(
     'E.g., I woke up with a sharp pain in my lower right abdomen that has been getting worse over the last 3 hours...'
@@ -20,6 +24,16 @@ export const PatientFlowWizard = () => {
   const [loading, setLoading] = useState(false);
 
   const { socket, joinPatientTracker } = useSocket();
+
+  const handleAuthSuccess = (user) => {
+    setPatientUser(user);
+    setIsAuthenticated(true);
+  };
+
+  const handleGuestIntake = () => {
+    setPatientUser({ name: 'Guest Patient', email: 'guest@smartcare.org', dob: '01/01/1990' });
+    setIsAuthenticated(true);
+  };
 
   // Run AI System Disease Prediction
   const handleRunAI = async (e) => {
@@ -64,7 +78,7 @@ export const PatientFlowWizard = () => {
     setLoading(true);
     try {
       const res = await createUrgencyRequest({
-        patientName: 'John Doe',
+        patientName: patientUser?.name || 'John Doe',
         symptomsText,
         diseasePrediction: aiResult?.primaryPrediction?.name || 'Acute Abdomen',
         hospitalId: selectedHospital.id,
@@ -81,9 +95,39 @@ export const PatientFlowWizard = () => {
     }
   };
 
+  // Render Login & Signup Page if not authenticated yet
+  if (!isAuthenticated) {
+    return (
+      <PatientAuthPage
+        onAuthSuccess={handleAuthSuccess}
+        onGuestIntake={handleGuestIntake}
+      />
+    );
+  }
+
   return (
     <div className="max-w-5xl mx-auto p-4 sm:p-6 space-y-6">
       
+      {/* Patient User Header Card */}
+      <div className="bg-white rounded-xl p-4 border border-slate-200 shadow-xs flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-bold">
+            <User size={20} />
+          </div>
+          <div>
+            <h3 className="font-bold text-slate-900 text-sm">{patientUser?.name}</h3>
+            <p className="text-xs text-slate-500 font-medium">{patientUser?.email}</p>
+          </div>
+        </div>
+
+        <button
+          onClick={() => setIsAuthenticated(false)}
+          className="text-xs font-bold text-slate-500 hover:text-slate-900 underline"
+        >
+          Switch Account
+        </button>
+      </div>
+
       {/* STEP 1: Matching Screenshot 4 (Triage Progress Sidebar + Main Intake Card) */}
       {step === 1 && (
         <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
